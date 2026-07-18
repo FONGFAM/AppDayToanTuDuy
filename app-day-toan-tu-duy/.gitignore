@@ -1,0 +1,79 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+out/
+.tsbuildinfo
+
+# Capacitor / Mobile Build Artifacts
+# Exclude build files, credentials, and dependency folders for mobile platforms
+/ios/App/Pods/
+/ios/App/Podfile.lock
+/ios/App/build/
+/ios/App/xcuserdata/
+/android/app/build/
+/android/.gradle/
+/android/local.properties
+/android/captures/
+/android/assets/public/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data & environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Diagnostic reports (safari, chrome, etc.)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.cpuprofile
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.classpath
+.project
+.settings/
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# Testing
+/coverage
+.nyc_output
+
+# Temp / Cache files
+.eslintcache
+.stylelintcache
+.parcel-cache
+.cache/
+.vite/
+.nuxt/
+.next/
+.docusaurus/
