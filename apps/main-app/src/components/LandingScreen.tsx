@@ -27,7 +27,7 @@ export function LandingScreen({ onStart, onJourney }: Props) {
         <div className="sun-disc" />
         <img className="landing-kitchen" src="assets/kitchen.jpg" alt="Gian bếp Việt ấm cúng" />
         <img className="hero-person hero-grandpa" src="assets/characters/grandpa.png" alt="Ông đang dùng bữa" />
-        <img className="hero-person hero-grandma" src="assets/characters/grandma.png" alt="Bà đang trò chuyện" />
+        <img className="hero-person hero-grandma" src="assets/characters/gandma.webp" alt="Bà đang trò chuyện" />
         <img className="hero-person hero-mom" src="assets/characters/mom.png" alt="Mẹ đang dọn bàn" />
         <img className="hero-person hero-sister" src="assets/characters/sister.png" alt="Em gái đang vui chơi" />
         <img className="hero-person hero-boy" src="assets/characters/player-boy.png" alt="Bé trai đồng hành" />

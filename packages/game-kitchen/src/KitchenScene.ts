@@ -70,8 +70,8 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('dining-approved', 'assets/dining-approved.jpg');
-    this.load.image('boy', 'assets/characters/player-boy.png');
+    this.load.image('dining-approved', 'assets/kitchen.jpg');
+    this.load.image('boy', 'assets/boy.webp');
   }
 
   create(): void {
