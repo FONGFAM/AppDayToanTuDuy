@@ -9,7 +9,7 @@ export class MainMenuScene extends Phaser.Scene {
         const width = this.cameras.main.width;
         const height = this.cameras.main.height;
 
-        const titleText = this.add.text(width / 2, height / 3, 'Bản Đồ Trưởng Thành', {
+        const titleText = this.add.text(width / 2, height / 3, 'Chuyện Của Bé', {
             fontSize: '48px',
             color: '#ff9900',
             fontStyle: 'bold'

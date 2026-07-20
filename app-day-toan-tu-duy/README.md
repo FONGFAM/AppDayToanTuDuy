@@ -1,4 +1,4 @@
-# App Dạy Toán Tư Duy (Bản Đồ Trưởng Thành)
+# App Dạy Toán Tư Duy (Chuyện Của Bé)
 
 Dự án Game Giáo dục 2D tương tác dành cho trẻ 3–6 tuổi dựa trên **Giáo trình Xoắn ốc** (Gia đình ➔ Xã hội ➔ Thiên nhiên) kết hợp yếu tố **Kể chuyện (Storytelling)** và tích hợp văn hóa Việt Nam thân thuộc.
 

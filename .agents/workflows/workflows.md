@@ -1,51 +1,41 @@
 ---
-description: 
+description: Quy trình phát triển tính năng và màn chơi cho AI
 ---
 
+# 🤖 QUY TRÌNH TRIỂN KHAI CHO AI (STRICT AI WORKFLOW)
 
-## 2. QUY TRÌNH QUẢN LÝ MÃ NGUỒN (GIT WORKFLOW)
+Mỗi khi AI nhận một yêu cầu phát triển hoặc cập nhật dự án, AI BẮT BUỘC phải thực hiện tuần tự các bước sau để tránh sai sót và đi chệch hướng:
 
-Dự án áp dụng mô hình **Feature Branch Workflow** kết hợp **Conventional Commits**.
+## BƯỚC 1: ĐỐI CHIẾU KHUNG GIÁO TRÌNH (CURRICULUM CHECK)
+- TRƯỚC KHI VIẾT CODE, AI phải kiểm tra yêu cầu thuộc **Năm nào**, **Chặng nào**, **Bài số mấy** trong `Khunggiaotrinh_Storytelling.md`.
+- Xác định rõ:
+  - **Mục tiêu Toán học:** (VD: Phân loại, đếm số, hình khối).
+  - **Mục tiêu Tiếng Anh:** (VD: Đếm One, Two, Circle).
+  - **Bối cảnh:** (VD: Bếp của ông bà, Sạp hoa quả chợ quê).
+- *Cảnh báo:* Nếu yêu cầu của User mơ hồ hoặc sai lệch với khung, AI phải dừng lại hỏi hoặc chủ động nắn chỉnh về đúng Khung Giáo Trình. Tuyệt đối không tự ý thêm bớt nội dung.
 
-### 2.1. Cấu trúc Nhánh (Branches)
-- `main`: Nhánh chứa code hoàn chỉnh, ổn định nhất (Production). Chỉ được phép Merge từ nhánh `develop` sang, không code trực tiếp.
-- `develop`: Nhánh chứa code đang phát triển, dùng để test nội bộ (Staging).
-- `feature/[tên-chức-năng]`: Nhánh dùng để code tính năng mới (VD: `feature/bai2-bua-com-gia-dinh`, `feature/login-api`).
-- `bugfix/[tên-lỗi]`: Nhánh sửa lỗi phát sinh.
+## BƯỚC 2: PHÂN TÍCH KIẾN TRÚC & PHÂN CHIA NHIỆM VỤ (ARCHITECTURE PLANNING)
+- Căn cứ vào `README.md`, xác định rõ phần nào thuộc **React UI** (nút bấm, modal, menu) và phần nào thuộc **Phaser Canvas** (kéo thả, nhân vật 2D, va chạm).
+- Lên danh sách các sự kiện (Events) cần thiết để giao tiếp giữa React và Phaser qua `EventBus` (nếu có sự tương tác qua lại).
 
-### 2.2. Quy ước Đặt tên Commit (Conventional Commits)
-Khi gõ lệnh commit, phải tuân thủ định dạng: `<type>: <mô tả ngắn>`
-- `feat:` Dành cho tính năng mới. (VD: `feat: them man hinh chon nhan vat`)
-- `fix:` Sửa lỗi bug. (VD: `fix: loi khong phat duoc am thanh tren iOS`)
-- `refactor:` Tối ưu/Viết lại code nhưng không làm thay đổi logic.
-- `docs:` Cập nhật tài liệu (Markdown, Kịch bản).
-- `chore:` Các tác vụ linh tinh, cấu hình (VD: `chore: update thu vien phaser`).
+## BƯỚC 3: THỰC THI VIẾT CODE (IMPLEMENTATION)
+1. **Cập nhật Cấu hình (nếu có):** Khai báo Lesson mới trong `src/data/curriculum.ts`.
+2. **Tạo Game Scene:** Viết class kế thừa `Phaser.Scene` cho bài học (VD: `src/game/scenes/Lesson4Scene.ts`). Đảm bảo logic kéo/thả/chạm/di chuyển phù hợp với trẻ em.
+3. **Đăng ký Scene:** Khai báo Scene mới vào `src/game/config.ts` và logic gọi Scene tương ứng từ React qua Phaser.
+4. **Viết React UI:** Tạo Component hiển thị bọc ngoài Game (nếu cần modal chúc mừng, modal hướng dẫn). Lắng nghe Event từ Game để cập nhật UI/Điểm số.
 
----
+## BƯỚC 4: QUY TRÌNH SỬ DỤNG TÀI NGUYÊN (ASSET PIPELINE)
+- AI khi code giả lập/sử dụng tài nguyên (hình ảnh/âm thanh) tạm thời (placeholder) phải đảm bảo:
+  - Tên file rõ ràng, bằng tiếng Anh hoặc tiếng Việt không dấu (VD: `mam-com.png`, `banh-chung.webp`).
+  - Lồng ghép màu sắc và hình khối đúng yêu cầu (VD: Quả bưởi phải tròn và xanh, Bánh chưng phải vuông và xanh).
+- Kích thước ảnh nhân vật/đồ vật không vượt quá giới hạn khung hình hiển thị.
+- Hình ảnh ưu tiên định dạng WebP/PNG tối ưu dung lượng cho App di động (Capacitor).
 
-## 3. QUY TRÌNH LÀM VIỆC HÀNG NGÀY (DAILY WORKFLOW)
-
-Đội ngũ sẽ tuân theo vòng lặp 5 bước sau khi nhận một Yêu cầu (Task) từ Kịch bản:
-
-1. **Nhận Task & Phân tích:**
-   - Dev nhận Kịch bản (VD: `Kichban_Bai2_BuaComGiaDinh.md`).
-   - Phân tích xem cần Asset (hình ảnh/âm thanh) gì, API backend nào để hỗ trợ.
-2. **Tạo nhánh (Branching):**
-   - Từ nhánh `develop`, dev checkout ra nhánh mới: `git checkout -b feature/bai-2-gameplay`.
-3. **Phát triển & Test cục bộ (Development):**
-   - Code tính năng.
-   - Test trực tiếp trên Web (Chrome) và giả lập iPad (Xcode Simulator via Capacitor).
-4. **Tạo Pull Request (Code Review):**
-   - Khi làm xong, đẩy code lên Github/Gitlab và tạo Pull Request (PR) yêu cầu merge vào `develop`.
-   - Một Dev khác (hoặc Lead) sẽ vào review code. Nếu đạt tiêu chuẩn mới được Merge.
-5. **Nghiệm thu (Staging & QA):**
-   - Code sau khi gộp vào `develop` sẽ tự động deploy lên server Staging.
-   - Đội ngũ thiết kế, giáo viên mầm non vào chơi thử. Nếu đúng Kịch bản thì sẽ gộp sang `main` để chốt.
+## BƯỚC 5: KIỂM TRA MÔI TRƯỜNG ĐÓNG GÓI (MOBILE/CAPACITOR CHECK)
+- Sau khi viết xong tính năng, AI phải kiểm tra lại xem code TypeScript có lỗi không.
+- Nhắc nhở bản thân rằng dự án sẽ chạy trên iOS/Android qua Capacitor. Không được viết các tính năng web-only (VD: không dựa dẫm vào các API trình duyệt đặc thù mà Mobile không hỗ trợ tốt).
+- Phải đảm bảo Test UI responsive trên kích thước màn hình ngang (Landscape) của iPad/Điện thoại.
 
 ---
-
-## 4. QUY TẮC QUẢN LÝ ASSET (HÌNH ẢNH, ÂM THANH)
-Bởi vì Game Giáo dục chứa lượng Asset rất lớn (Nhân vật, Mâm cơm, Bát đũa, Giọng đọc Tiếng Anh):
-- Hình ảnh bắt buộc dùng định dạng **WebP** hoặc **PNG đã nén** để làm nhẹ App.
-- Kích thước ảnh nhân vật/đồ vật không vượt quá giới hạn khung hình hiển thị (Đừng đưa ảnh 4K vào màn hình Game).
-- Toàn bộ Asset phải được tải lên Cloud (Cloudflare R2/S3) ở môi trường Production thay vì nhét trực tiếp vào Source Code, giúp App tải về lần đầu nhẹ hơn.
+> **LỜI NHẮC CẢNH BÁO CHO AI:** 
+> Việc tạo ra một App giáo dục cho trẻ mầm non yêu cầu sự tĩnh tại, dễ hiểu và chậm rãi. **KHÔNG** thêm các hiệu ứng rung lắc mạnh, **KHÔNG** làm luồng đi (User Flow) phức tạp. LUÔN LUÔN giữ sự đơn giản, rõ ràng và đúng chuẩn văn hoá Việt!

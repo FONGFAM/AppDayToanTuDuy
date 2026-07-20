@@ -15,7 +15,7 @@ export function JourneyMap({ avatar, onPlay, onHome }: Props) {
         <button className="back-link" type="button" onClick={onHome}>← Trang chủ</button>
         <div>
           <span className="project-kicker">GIÁO TRÌNH XOẮN ỐC · STORYTELLING</span>
-          <h1>Bản đồ trưởng thành</h1>
+          <h1>Chuyện Của Bé</h1>
         </div>
         <img className="map-avatar" src={avatarImage} alt="Nhân vật đồng hành" />
       </header>

@@ -1,4 +1,4 @@
-# 🗺️ KHUNG CHƯƠNG TRÌNH GIÁO TRÌNH: BẢN ĐỒ TRƯỞNG THÀNH (BẢN VIỆT HOÁ & VĂN HOÁ DÂN GIAN)
+# 🗺️ KHUNG CHƯƠNG TRÌNH GIÁO TRÌNH: Chuyện Của Bé (BẢN VIỆT HOÁ & VĂN HOÁ DÂN GIAN)
 **Dự án Math & AI Mầm Non (Độ tuổi 3-6) - Phiên bản Gamification & Storytelling**
 
 ---

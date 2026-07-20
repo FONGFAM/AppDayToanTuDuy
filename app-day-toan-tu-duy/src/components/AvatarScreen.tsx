@@ -20,7 +20,7 @@ export function AvatarScreen({ value, onChange, onContinue, onBack }: Props) {
             <strong>Bé An</strong><span>Vui vẻ · sáng tạo</span>
           </button>
         </div>
-        <button className="button button-primary button-large" type="button" onClick={onContinue}>Mở bản đồ trưởng thành</button>
+        <button className="button button-primary button-large" type="button" onClick={onContinue}>Mở Chuyện Của Bé</button>
       </section>
     </main>
   );
