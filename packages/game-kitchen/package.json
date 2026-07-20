@@ -1,0 +1,13 @@
+{
+  "name": "@app/game-kitchen",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "dependencies": {
+    "phaser": "3.90.0",
+    "@app/core": "*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}
