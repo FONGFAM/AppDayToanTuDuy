@@ -23,5 +23,13 @@ export function PhaserCanvas({ avatar, lessonId }: Props) {
     };
   }, [avatar, lessonId]);
 
-  return <div className="phaser-host" ref={parentRef} aria-label="Màn chơi hoạt hình" />;
+  return (
+    <div className="flex-1 w-full h-full p-2 sm:p-4 bg-slate-900 overflow-hidden relative">
+      <div 
+        ref={parentRef} 
+        aria-label="Màn chơi hoạt hình"
+        className="w-full h-full rounded-[2rem] overflow-hidden border-4 border-slate-700 shadow-2xl relative bg-black flex items-center justify-center [&>canvas]:max-w-full [&>canvas]:max-h-full [&>canvas]:object-contain"
+      />
+    </div>
+  );
 }

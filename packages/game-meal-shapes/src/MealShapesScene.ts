@@ -42,12 +42,12 @@ export class MealShapesScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('kitchen-bg', 'assets/phongbep.webp');
+    this.load.image('kitchen-bg', 'assets/characters/phongbep.webp');
     this.load.image('table', 'assets/caiban.webp');
-    this.load.image('mother', 'assets/anhme.webp');
-    this.load.image('father', 'assets/anhbo.webp');
-    this.load.image('grandma', 'assets/anhba.webp');
-    this.load.image('player-avatar', this.avatar === 'boy' ? 'assets/betrai.webp' : 'assets/characters/player-girl.png');
+    this.load.image('mother', 'assets/characters/anhme.webp');
+    this.load.image('father', 'assets/characters/papa.png');
+    this.load.image('grandma', 'assets/characters/anhba.webp');
+    this.load.image('player-avatar', this.avatar === 'boy' ? 'assets/characters/betrai.webp' : 'assets/characters/player-girl.png');
   }
 
   create(): void {
