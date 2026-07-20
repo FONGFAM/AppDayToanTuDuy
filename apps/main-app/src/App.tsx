@@ -17,8 +17,25 @@ type LearningWord = { vietnamese: string; english: string; kind: 'tap' | 'succes
 
 const defaultProgress: Progress = { collected: 0, pairs: 0, target: 10, phase: 'collect' };
 
+const getScreenFromHash = (): Screen => {
+  const hash = window.location.hash.replace('#', '') as Screen;
+  return ['home', 'avatar', 'map', 'game', 'complete'].includes(hash) ? hash : 'home';
+};
+
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('home');
+  const [screen, setScreenState] = useState<Screen>(getScreenFromHash);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setScreenState(getScreenFromHash());
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const setScreen = (newScreen: Screen) => {
+    window.location.hash = newScreen;
+  };
   const [avatar, setAvatar] = useState<Avatar>('boy');
   const [activeLessonId, setActiveLessonId] = useState<string>('family-meal-shapes');
   const [showTutorial, setShowTutorial] = useState(false);
@@ -108,15 +125,16 @@ export default function App() {
   const isMealShapes = activeLessonId === 'family-meal-shapes';
 
   return (
-    <main className="game-shell">
+    <div className="relative w-screen h-screen overflow-hidden bg-slate-900 font-sans select-none">
       <PhaserCanvas avatar={avatar} lessonId={activeLessonId} />
 
-      <header className="game-topbar">
-        <div className="objective-card">
-          <span className="objective-label">
+      {/* Top Bar */}
+      <header className="absolute top-0 left-0 right-0 p-4 md:p-6 flex justify-between items-start pointer-events-none z-10">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl border-4 border-slate-200 shadow-sm p-4 max-w-sm pointer-events-auto">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-1">
             {isMealShapes ? 'BÀI 2 · BƯA CƠM GIA ĐÌNH' : 'BÀI 3 · ĐÔI ĐŨA CỦA ÔNG'}
           </span>
-          <strong>
+          <strong className="text-lg font-bold text-slate-800 leading-tight">
             {isMealShapes ? (
               progress.phase === 'collect' 
                 ? 'Tìm và kéo mâm tròn đặt lên bàn' 
@@ -134,54 +152,83 @@ export default function App() {
             )}
           </strong>
         </div>
-        <div className="counter-row">
-          {isMealShapes ? (
-            <>
-              <div className="counter-card">
-                <span>⭕</span>
-                <b>{progress.collected}/2</b>
-                <small>hình tròn</small>
-              </div>
-              <div className="counter-card">
-                <span>⬜</span>
-                <b>{progress.pairs}/2</b>
-                <small>hình vuông</small>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="counter-card">
-                <span>🥢</span>
-                <b>{progress.collected}/{progress.target}</b>
-                <small>chiếc</small>
-              </div>
-              <div className="counter-card">
-                <span>◫</span>
-                <b>{progress.pairs}/5</b>
-                <small>đôi</small>
-              </div>
-            </>
-          )}
-        </div>
-        <div className="top-actions">
-          <button type="button" className="icon-button" onClick={() => setSoundEnabled((value) => !value)} aria-label={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}>{soundEnabled ? '🔊' : '🔇'}</button>
-          <button type="button" className="icon-button" onClick={showHelp} aria-label="Xem hướng dẫn">?</button>
-          <button type="button" className="icon-button" onClick={toggleFullscreen} aria-label="Toàn màn hình">⛶</button>
-          <button type="button" className="icon-button" onClick={openMap} aria-label="Về bản đồ">🗺</button>
+
+        <div className="flex flex-col md:flex-row gap-3 pointer-events-auto">
+          <div className="flex gap-2 bg-white/90 backdrop-blur-md p-2 rounded-2xl border-4 border-slate-200 shadow-sm">
+            {isMealShapes ? (
+              <>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-xl">
+                  <span className="text-xl">⭕</span>
+                  <div className="flex flex-col leading-tight"><b className="text-slate-800 text-lg">{progress.collected}/2</b><small className="text-[10px] text-slate-500 uppercase font-bold">hình tròn</small></div>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-xl">
+                  <span className="text-xl">⬜</span>
+                  <div className="flex flex-col leading-tight"><b className="text-slate-800 text-lg">{progress.pairs}/2</b><small className="text-[10px] text-slate-500 uppercase font-bold">hình vuông</small></div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-xl">
+                  <span className="text-xl">🥢</span>
+                  <div className="flex flex-col leading-tight"><b className="text-slate-800 text-lg">{progress.collected}/{progress.target}</b><small className="text-[10px] text-slate-500 uppercase font-bold">chiếc</small></div>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-xl">
+                  <span className="text-xl">◫</span>
+                  <div className="flex flex-col leading-tight"><b className="text-slate-800 text-lg">{progress.pairs}/5</b><small className="text-[10px] text-slate-500 uppercase font-bold">đôi</small></div>
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="flex gap-2">
+            <button type="button" className="w-12 h-12 bg-white/90 border-4 border-slate-200 rounded-full flex items-center justify-center text-xl hover:bg-slate-50 shadow-sm active:scale-95 transition-all" onClick={() => setSoundEnabled((value) => !value)} aria-label={soundEnabled ? 'Tắt âm thanh' : 'Bật âm thanh'}>{soundEnabled ? '🔊' : '🔇'}</button>
+            <button type="button" className="w-12 h-12 bg-white/90 border-4 border-slate-200 rounded-full flex items-center justify-center text-xl hover:bg-slate-50 shadow-sm active:scale-95 transition-all font-bold text-slate-500" onClick={showHelp} aria-label="Xem hướng dẫn">?</button>
+            <button type="button" className="w-12 h-12 bg-white/90 border-4 border-slate-200 rounded-full flex items-center justify-center text-xl hover:bg-slate-50 shadow-sm active:scale-95 transition-all" onClick={toggleFullscreen} aria-label="Toàn màn hình">⛶</button>
+            <button type="button" className="w-12 h-12 bg-white/90 border-4 border-slate-200 rounded-full flex items-center justify-center text-xl hover:bg-slate-50 shadow-sm active:scale-95 transition-all" onClick={openMap} aria-label="Về bản đồ">🗺</button>
+          </div>
         </div>
       </header>
 
-      <div className="controls-layer">
+      {/* Controls */}
+      <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none z-10">
         <DPad />
-        <div className="action-wrap">
-          <span className="action-hint">{action.hint}</span>
-          <button type="button" className="action-button" disabled={!action.enabled} onClick={() => gameBus.emit('action')}>{action.label}</button>
+        <div className="flex flex-col items-end gap-2 pointer-events-auto">
+          <span className="bg-slate-800/80 text-white px-3 py-1 rounded-full text-xs font-bold">{action.hint}</span>
+          <button 
+            type="button" 
+            disabled={!action.enabled} 
+            onClick={() => gameBus.emit('action')}
+            className={`px-8 py-4 rounded-3xl font-bold text-xl uppercase tracking-wider transition-all shadow-bouncy active:shadow-bouncy-pressed ${
+              action.enabled ? 'bg-primary text-white border-primary shadow-[0_6px_0_0_#C85230]' : 'bg-slate-300 text-slate-500 shadow-[0_6px_0_0_#94a3b8]'
+            }`}
+          >
+            {action.label}
+          </button>
         </div>
       </div>
 
-      {subtitle && <div className={`subtitle subtitle-${subtitle.tone}`} role="status" aria-live="polite">{subtitle.text}</div>}
+      {/* Subtitle */}
+      {subtitle && (
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+          <div className={`px-6 py-3 rounded-2xl text-xl font-bold text-white shadow-lg border-2 backdrop-blur-md ${
+            subtitle.tone === 'success' ? 'bg-success/90 border-success shadow-success/30' :
+            subtitle.tone === 'try' ? 'bg-amber-500/90 border-amber-500 shadow-amber-500/30' :
+            subtitle.tone === 'learn' ? 'bg-accent/90 border-accent shadow-accent/30' :
+            'bg-slate-800/90 border-slate-700'
+          }`} role="status" aria-live="polite">
+            {subtitle.text}
+          </div>
+        </div>
+      )}
+
       {showTutorial && <TutorialModal lessonId={activeLessonId} replay={tutorialReplay} onStart={tutorialReplay ? closeHelp : startLevel} onClose={tutorialReplay ? closeHelp : undefined} />}
-      <div className="rotate-device"><span>↻</span><strong>Hãy xoay ngang màn hình</strong></div>
-    </main>
+      
+      {/* Rotate Device Warning (Mobile Portrait) */}
+      <div className="portrait:flex landscape:hidden fixed inset-0 z-50 bg-slate-900 text-white flex-col items-center justify-center p-8 text-center font-sans">
+        <span className="text-6xl mb-4 animate-spin-slow">↻</span>
+        <strong className="text-2xl font-bold">Hãy xoay ngang màn hình</strong>
+        <p className="text-slate-400 mt-2">Trải nghiệm game tốt nhất khi ở chế độ toàn màn hình ngang.</p>
+      </div>
+    </div>
   );
 }

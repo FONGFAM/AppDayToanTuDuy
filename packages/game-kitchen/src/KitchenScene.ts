@@ -70,8 +70,8 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('dining-approved', 'assets/kitchen.jpg');
-    this.load.image('boy', 'assets/boy.webp');
+    this.load.image('dining-approved', 'assets/characters/kitchen.jpg');
+    this.load.image('boy', 'assets/characters/betrai.webp');
   }
 
   create(): void {
@@ -316,7 +316,7 @@ export class KitchenScene extends Phaser.Scene {
       this.player.setAcceleration(0, 0);
     }
 
-    const speed = (this.player.body as Phaser.Physics.Arcade.Body).speed;
+    const { speed } = this.player.body as Phaser.Physics.Arcade.Body;
     const walkAmount = Phaser.Math.Clamp(speed / 220, 0, 1);
     const stride = Math.sin(this.time.now / 80);
     const bounce = Math.abs(Math.sin(this.time.now / 90));
