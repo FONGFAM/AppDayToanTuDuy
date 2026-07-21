@@ -70,7 +70,7 @@ export class KitchenScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('dining-approved', 'assets/characters/kitchen.jpg');
+    this.load.image('dining-approved', 'assets/characters/phongan.png'); // B\u1ebfp + ph\u00f2ng \u0103n Gia \u0111\u00ecnh Vi\u1ec7t
     this.load.image('boy', 'assets/characters/betrai.webp');
   }
 
@@ -132,7 +132,7 @@ export class KitchenScene extends Phaser.Scene {
     }
 
     const label = this.add.text(-15, 8, 'ỐNG ĐŨA', {
-      fontFamily: 'Nunito, Arial, sans-serif',
+      fontFamily: 'iruKaEdu',
       fontSize: '20px',
       fontStyle: 'bold',
       color: '#5d321c',
@@ -213,7 +213,7 @@ export class KitchenScene extends Phaser.Scene {
       this.carryBundle.add(this.add.rectangle(-13 + i * 7, -4, 4, 50, i % 2 ? 0x8e4e26 : 0xaa6032).setAngle(-8 + i * 4));
     }
     this.carryText = this.add.text(0, 17, '0', {
-      fontFamily: 'Nunito, Arial, sans-serif',
+      fontFamily: 'iruKaEdu',
       fontSize: '17px',
       fontStyle: 'bold',
       color: '#713716',

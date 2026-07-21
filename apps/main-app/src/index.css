@@ -1,7 +1,21 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'iruKaEdu';
+  src: url('/assets/static/iruKaEdu-Normal.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'iruKaEdu';
+  src: url('/assets/static/iruKaEdu-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
 @theme {
-  --font-sans: "Quicksand", system-ui, sans-serif;
+  --font-sans: "iruKaEdu", "Quicksand", system-ui, sans-serif;
   
   --color-primary: #FF8A65;
   --color-primary-shadow: #C85230;
@@ -22,6 +36,10 @@
 @layer base {
   body {
     @apply bg-blue-50 font-sans text-slate-800 antialiased overflow-x-hidden;
+    /* Sửa lỗi đè chữ của font tiếng Việt */
+    font-kerning: none;
+    font-feature-settings: "kern" 0;
+    letter-spacing: 0.08em;
   }
 }
 
