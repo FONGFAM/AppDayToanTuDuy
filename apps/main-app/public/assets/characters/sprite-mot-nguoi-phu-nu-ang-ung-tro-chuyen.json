@@ -1,0 +1,12 @@
+{
+  "frames": 24,
+  "frame_size": 256,
+  "layout": "horizontal",
+  "fps_goi_y": 18,
+  "loop": true,
+  "baseline_delta": 0,
+  "sheet_width": 6144,
+  "sheet_height": 256,
+  "sheet_file": "sprite-mot-nguoi-phu-nu-ang-ung-tro-chuyen.webp",
+  "ghi_chu": "Sheet ngang: cat theo frame_size px moi khung, chieu tu trai sang phai theo fps_goi_y."
+}

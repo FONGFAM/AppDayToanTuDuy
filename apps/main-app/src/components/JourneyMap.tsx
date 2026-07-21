@@ -27,8 +27,8 @@ export function JourneyMap({ avatar, onPlay, onHome }: Props) {
             <ArrowLeft size={24} strokeWidth={3} />
           </button>
           <div>
-            <span className="text-xs font-bold text-accent uppercase tracking-wider">Storytelling · Xoắn Ốc</span>
-            <h1 className="text-2xl font-extrabold text-slate-800">Chuyện Của Bé</h1>
+            <span className="text-xs font-bold text-accent tracking-[0.12em]">Storytelling · Xoắn Ốc</span>
+            <h1 className="text-2xl font-extrabold text-slate-800 tracking-[0.05em]">Chuyện Của Bé</h1>
           </div>
         </div>
         <img className="w-12 h-12 rounded-full border-2 border-slate-200 bg-slate-100 object-cover" src={avatarImage} alt="Avatar" />
@@ -47,7 +47,7 @@ export function JourneyMap({ avatar, onPlay, onHome }: Props) {
               item.id !== yearId && "!bg-white !text-slate-500 hover:!bg-slate-50 !shadow-sm !border-2 !border-slate-200"
             )}
           >
-            <small className="text-[10px] uppercase font-bold opacity-80">Năm {item.id}</small>
+            <small className="text-[10px] font-bold opacity-80">Năm {item.id}</small>
             <strong className="text-sm">{item.title}</strong>
           </BouncyButton>
         ))}
@@ -129,7 +129,7 @@ export function JourneyMap({ avatar, onPlay, onHome }: Props) {
                           </div>
 
                           <strong className="text-lg font-bold text-slate-800 leading-tight mb-1">{lesson.title}</strong>
-                          <small className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">{lesson.math}</small>
+                          <small className="text-xs font-bold text-slate-500 tracking-wider mb-3">{lesson.math}</small>
                           <p className="text-sm text-slate-600 mb-4 line-clamp-2">{lesson.mission}</p>
                           
                           <div className="mt-auto pt-4 border-t border-slate-100 w-full flex items-center justify-between">

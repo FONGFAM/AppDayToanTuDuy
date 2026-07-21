@@ -25,7 +25,7 @@ export function AvatarScreen({ value, onChange, onContinue, onBack }: Props) {
         </button>
 
         <div className="text-center mt-12 mb-10">
-          <span className="bg-accent/10 text-accent font-bold px-4 py-2 rounded-full uppercase tracking-wider text-sm">
+          <span className="bg-accent/10 text-accent font-bold px-4 py-2 rounded-full tracking-wider text-sm">
             Nhân vật đồng hành
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800 mt-6 drop-shadow-sm">

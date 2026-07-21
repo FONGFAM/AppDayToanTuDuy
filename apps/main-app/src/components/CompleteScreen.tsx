@@ -50,18 +50,18 @@ export function CompleteScreen({ onReplay, onMap }: Props) {
           <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.6, type: 'spring' }}><Star size={56} className="fill-amber-400 text-amber-500 drop-shadow-md rotate-12" /></motion.div>
         </div>
 
-        <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-full uppercase tracking-wider text-xs shadow-sm">Chặng 1 · Ngôi nhà kỳ diệu</span>
+        <span className="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-full tracking-wider text-xs shadow-sm">Chặng 1 · Ngôi nhà kỳ diệu</span>
         
-        <h1 className="text-4xl font-extrabold text-amber-500 uppercase drop-shadow-sm my-2">Xuất Sắc!</h1>
+        <h1 className="text-4xl font-extrabold text-amber-500 drop-shadow-sm my-2">Xuất Sắc!</h1>
         
         <p className="text-slate-600 font-medium text-lg leading-snug">Bé đã lấy đủ đũa, chọn đúng đũa dài và chia đều cho cả gia đình.</p>
         
         <div className="bg-slate-50 w-full p-4 rounded-2xl border-2 border-slate-100 flex items-center justify-center gap-3 text-2xl font-bold my-2">
-          <div className="flex flex-col items-center"><span className="text-primary text-3xl">5</span><span className="text-[10px] text-slate-500 uppercase">người</span></div>
+          <div className="flex flex-col items-center"><span className="text-primary text-3xl">5</span><span className="text-[10px] text-slate-500">người</span></div>
           <span className="text-slate-300">×</span>
-          <div className="flex flex-col items-center"><span className="text-accent text-3xl">2</span><span className="text-[10px] text-slate-500 uppercase">chiếc</span></div>
+          <div className="flex flex-col items-center"><span className="text-accent text-3xl">2</span><span className="text-[10px] text-slate-500">chiếc</span></div>
           <span className="text-slate-300">=</span>
-          <div className="flex flex-col items-center"><span className="text-success text-3xl">10</span><span className="text-[10px] text-slate-500 uppercase">đũa</span></div>
+          <div className="flex flex-col items-center"><span className="text-success text-3xl">10</span><span className="text-[10px] text-slate-500">đũa</span></div>
         </div>
 
         <div className="flex flex-wrap justify-center gap-2">

@@ -33,7 +33,7 @@ export function TutorialModal({ lessonId, onStart, onClose, replay = false }: Pr
         {isMealShapes ? (
           <>
             <div className="text-center">
-              <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full uppercase tracking-wider text-xs">Năm 1 · Chặng 1 · Bài 2</span>
+              <span className="bg-primary/10 text-primary font-bold px-3 py-1 rounded-full tracking-wider text-xs">Năm 1 · Chặng 1 · Bài 2</span>
               <h2 id="tutorial-title" className="text-3xl font-extrabold text-slate-800 mt-4 mb-2">Bữa cơm gia đình</h2>
               <p className="text-slate-600 font-medium">Dọn mâm cơm và chia đồ ăn, bát đũa cho cả nhà.</p>
             </div>
@@ -61,7 +61,7 @@ export function TutorialModal({ lessonId, onStart, onClose, replay = false }: Pr
         ) : (
           <>
             <div className="text-center">
-              <span className="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full uppercase tracking-wider text-xs">Năm 1 · Chặng 1 · Bài 3</span>
+              <span className="bg-accent/10 text-accent font-bold px-3 py-1 rounded-full tracking-wider text-xs">Năm 1 · Chặng 1 · Bài 3</span>
               <h2 id="tutorial-title" className="text-3xl font-extrabold text-slate-800 mt-4 mb-2">Đôi đũa của ông</h2>
               <p className="text-slate-600 font-medium">Gia đình có 5 người. Mỗi người cần 1 đôi đũa.</p>
             </div>
@@ -88,7 +88,7 @@ export function TutorialModal({ lessonId, onStart, onClose, replay = false }: Pr
           </>
         )}
         
-        <p className="text-center text-xs text-slate-400 font-bold uppercase tracking-wide">Màn hình hiện tiếng Việt · Loa phát từ đơn tiếng Anh</p>
+        <p className="text-center text-xs text-slate-400 font-bold tracking-wide">Màn hình hiện tiếng Việt · Loa phát từ đơn tiếng Anh</p>
 
         <div className="flex justify-center w-full mt-2">
           <BouncyButton color="primary" size="lg" onClick={onStart} className="w-full">

@@ -2,16 +2,21 @@ import Phaser from 'phaser';
 import { gameBus } from '@app/core';
 
 export class MealShapesScene extends Phaser.Scene {
-  private avatar!: string;
+  private avatar: string = 'boy';
   private phase: 'collect' | 'return' | 'serve' | 'chopsticks' = 'collect';
-  
+
   // Counters for App header
   private collectedCount = 0; // Number of circles placed
   private pairsCount = 0;     // Number of squares placed
 
   // Assets positions & game objects
-  private table!: Phaser.GameObjects.Image;
+  private table!: Phaser.GameObjects.Rectangle;
   
+  // Cutscene objects
+  private cabinetRect!: Phaser.GameObjects.Rectangle;
+  private cabinetText!: Phaser.GameObjects.Text;
+  private momSprite?: Phaser.GameObjects.Sprite;
+
   // Interactive Items
   private mamCircle!: Phaser.GameObjects.Container;
   private khaySquare!: Phaser.GameObjects.Container;
@@ -19,7 +24,7 @@ export class MealShapesScene extends Phaser.Scene {
 
   // Dishes to place in Phase 2
   private dishes: Phaser.GameObjects.Container[] = [];
-  
+
   // Bowls to place in Phase 3
   private bigBowl!: Phaser.GameObjects.Container;
   private smallBowl!: Phaser.GameObjects.Container;
@@ -35,6 +40,7 @@ export class MealShapesScene extends Phaser.Scene {
 
   init(): void {
     this.avatar = this.registry.get('avatar') || 'boy';
+    console.log('Active avatar:', this.avatar);
     this.phase = 'collect';
     this.collectedCount = 0;
     this.pairsCount = 0;
@@ -42,48 +48,163 @@ export class MealShapesScene extends Phaser.Scene {
   }
 
   preload(): void {
-    this.load.image('kitchen-bg', 'assets/characters/phongbep.webp');
-    this.load.image('table', 'assets/caiban.webp');
-    this.load.image('mother', 'assets/characters/anhme.webp');
-    this.load.image('father', 'assets/characters/papa.png');
-    this.load.image('grandma', 'assets/characters/anhba.webp');
-    this.load.image('player-avatar', this.avatar === 'boy' ? 'assets/characters/betrai.webp' : 'assets/characters/player-girl.png');
+    // Tải ảnh nền các giai đoạn
+    this.load.image('intro-bg', 'assets/characters/phongan.png');     // Mẹ đang nấu — cutscene mở đầu
+    this.load.image('dialogue-bg', 'assets/characters/phongan1.png'); // Mẹ + Bé — đoạn hội thoại
+    this.load.image('kitchen-bg', 'assets/characters/phongan1.png');   // Phòng ăn — gameplay chính
+
+    // Tải spritesheet nhân vật Mẹ
+    this.load.spritesheet('mom-talking', 'assets/characters/sprite-mot-nguoi-phu-nu-ang-ung-tro-chuyen.webp', {
+      frameWidth: 256,
+      frameHeight: 256
+    });
   }
+
+  // Biến lưu ảnh nền hiện tại
+  private currentBg!: Phaser.GameObjects.Image;
 
   create(): void {
     const { width, height } = this.cameras.main;
 
-    // 1. Background
-    this.add.image(width / 2, height / 2, 'kitchen-bg').setDisplaySize(width, height);
+    // 1. CHỈ tạo Background Intro, bỏ đi hoàn toàn tất cả vật thể khác
+    this.currentBg = this.add.image(width / 2, height / 2, 'intro-bg').setDisplaySize(width, height);
 
-    // 2. Bàn ăn (Table in the center bottom)
-    this.table = this.add.image(width / 2 + 50, height / 2 + 130, 'table').setScale(0.75).setDepth(10);
+    // Báo cho UI biết đang trong chế độ cắt cảnh (ẩn các nút)
+    gameBus.emit('cutscene', true);
 
-    // 3. Characters sitting around
-    this.add.image(width / 2 - 220, height / 2 - 10, 'grandma').setScale(0.35).setDepth(9);
-    this.add.image(width / 2 + 300, height / 2 + 10, 'mother').setScale(0.35).setDepth(9);
-    this.add.image(width / 2 + 50, height / 2 - 80, 'father').setScale(0.32).setDepth(9);
-    this.add.image(width / 2 - 340, height / 2 + 160, 'player-avatar').setScale(0.35).setDepth(11);
+    // Bắt đầu chuỗi Intro
+    this.startIntro();
+  }
 
-    // 4. Cabinet (Chạn bát on the left)
-    this.add.rectangle(150, height / 2 + 80, 220, 320, 0x8d5c38)
+
+  // ==========================================
+  // CỐT TRUYỆN: INTRO -> DIALOGUE -> GAMEPLAY
+  // ==========================================
+  private startIntro(): void {
+    const { width, height } = this.cameras.main;
+
+    // Khung chữ giới thiệu nảy lên
+    const introText = this.add.text(width / 2, height / 2, 'Vào một ngày đẹp trời...', {
+      fontFamily: 'iruKaEdu',
+      fontSize: '36px',
+      fontStyle: 'bold',
+      color: '#5c3a21',
+      backgroundColor: '#ffffff',
+      padding: { x: 30, y: 20 }
+    }).setOrigin(0.5).setDepth(50).setAlpha(0).setScale(0.5);
+
+    // Hiệu ứng nảy vào
+    this.tweens.add({
+      targets: introText,
+      alpha: 1,
+      scale: 1,
+      duration: 1000,
+      ease: 'Bounce.easeOut',
+      onComplete: () => {
+        // Chờ 3 giây rồi chuyển cảnh (hoặc người dùng bấm màn hình)
+        const nextTimer = this.time.delayedCall(3000, () => nextScene());
+        
+        const nextScene = () => {
+          nextTimer.remove();
+          this.input.off('pointerdown', nextScene);
+          this.tweens.add({
+            targets: introText,
+            alpha: 0,
+            scale: 0.5,
+            duration: 500,
+            ease: 'Power2',
+            onComplete: () => {
+              introText.destroy();
+              this.startDialogue();
+            }
+          });
+        };
+
+        // Cho phép bấm bỏ qua
+        this.input.once('pointerdown', nextScene);
+      }
+    });
+  }
+
+  private startDialogue(): void {
+    const { width, height } = this.cameras.main;
+    // Đổi ảnh nền sang cảnh 2 (phongan1 - cảnh mẹ con)
+    this.currentBg.setTexture('dialogue-bg');
+
+    // Tạo animation từ spritesheet
+    if (!this.anims.exists('mom-talking-anim')) {
+      this.anims.create({
+        key: 'mom-talking-anim',
+        frames: this.anims.generateFrameNumbers('mom-talking', { start: 6, end: 23 }), // Cắt bỏ các frame lỗi (1-5) ở đầu
+        frameRate: 8, // Giảm tốc độ xuống để mượt mà và chậm hơn
+        repeat: -1
+      });
+    }
+
+    // Spawn nhân vật Mẹ dạng sprite động
+    this.momSprite = this.add.sprite(width * 0.75, height * 0.65, 'mom-talking');
+    this.momSprite.setScale(2.2); // Tỷ lệ cho phù hợp
+    this.momSprite.setDepth(100);
+    this.momSprite.play('mom-talking-anim');
+
+    // Lời thoại của mẹ
+    gameBus.emit('subtitle', { text: "Bé ơi, giúp mẹ dọn cơm nhé! Con lấy giúp mẹ mâm và khay ra nào", tone: 'success' });
+    
+    // Chờ 4 giây hoặc click để vào game
+    const nextTimer = this.time.delayedCall(4000, () => nextScene());
+    
+    const nextScene = () => {
+      nextTimer.remove();
+      this.input.off('pointerdown', nextScene);
+      if (this.momSprite) {
+        this.momSprite.destroy();
+        this.momSprite = undefined;
+      }
+      this.startGameplay();
+    };
+
+    this.input.once('pointerdown', nextScene);
+  }
+
+  private startGameplay(): void {
+    const { width, height } = this.cameras.main;
+    
+    // Báo cho UI biết cắt cảnh đã xong, hiện lại các nút bấm
+    gameBus.emit('cutscene', false);
+
+    // Đổi ảnh nền sang cảnh 3 (trở lại phòng ăn rộng)
+    this.currentBg.setTexture('kitchen-bg'); 
+
+    // Tạo cái bàn ẩn
+    this.table = this.add.rectangle(width / 2 + 50, height / 2 + 130, 400, 200, 0x000000, 0).setDepth(10) as any;
+
+    // Vẽ Chạn bát (cần thiết cho phần kéo thả)
+    this.cabinetRect = this.add.rectangle(150, height / 2 + 80, 220, 320, 0x8d5c38)
       .setStrokeStyle(6, 0x5c3a21)
-      .setDepth(5);
-    this.add.text(150, height / 2 - 60, 'CHẠN BÁT', {
-      fontFamily: 'Arial',
+      .setDepth(5).setAlpha(0);
+    this.cabinetText = this.add.text(150, height / 2 - 60, 'CHẠN BÁT', {
+      fontFamily: 'iruKaEdu',
       fontSize: '20px',
       fontStyle: 'bold',
       color: '#ffffff',
       backgroundColor: '#5c3a21',
       padding: { x: 10, y: 5 }
-    }).setOrigin(0.5).setDepth(6);
+    }).setOrigin(0.5).setDepth(6).setAlpha(0);
 
-    // 5. Initialize Interactive Drag-and-Drop system
-    this.createPhase1Items();
+    // Hiện chạn bát lên
+    this.tweens.add({
+      targets: [this.cabinetRect, this.cabinetText],
+      alpha: 1,
+      duration: 800,
+      onComplete: () => {
+        // Khởi tạo đồ đạc kéo thả
+        this.createPhase1Items();
 
-    // Set first instruction hint
-    gameBus.emit('action-context', { label: 'BẮT ĐẦU', enabled: false, hint: 'Kéo chiếc mâm tròn trên chạn bát ra bàn' });
-    this.emitProgress();
+        // Gửi hướng dẫn nhiệm vụ
+        gameBus.emit('action-context', { label: 'BẮT ĐẦU', enabled: false, hint: 'Kéo chiếc mâm tròn trên chạn bát ra bàn' });
+        this.emitProgress();
+      }
+    });
   }
 
   // ==========================================
@@ -95,7 +216,7 @@ export class MealShapesScene extends Phaser.Scene {
     // Mâm Tròn (Circle) - Correct Target
     this.mamCircle = this.add.container(150, height / 2 + 20);
     const mamBg = this.add.circle(0, 0, 45, 0xe5c158).setStrokeStyle(4, 0xd0aa3e);
-    const mamLabel = this.add.text(0, 0, 'Mâm Tròn', { fontSize: '14px', color: '#5c3a21', fontStyle: 'bold' }).setOrigin(0.5);
+    const mamLabel = this.add.text(0, 0, 'Mâm Tròn', { fontFamily: 'iruKaEdu', fontSize: '15px', color: '#5c3a21', fontStyle: 'bold' }).setOrigin(0.5);
     this.mamCircle.add([mamBg, mamLabel]);
     this.mamCircle.setSize(90, 90).setDepth(20);
     this.makeDraggable(this.mamCircle, 'circle');
@@ -103,7 +224,7 @@ export class MealShapesScene extends Phaser.Scene {
     // Khay Vuông (Square) - Wrong Target
     this.khaySquare = this.add.container(150, height / 2 + 110);
     const khayBg = this.add.rectangle(0, 0, 80, 80, 0xa0785a).setStrokeStyle(4, 0x7c593f);
-    const khayLabel = this.add.text(0, 0, 'Khay Vuông', { fontSize: '13px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+    const khayLabel = this.add.text(0, 0, 'Khay Vuông', { fontFamily: 'iruKaEdu', fontSize: '13px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.khaySquare.add([khayBg, khayLabel]);
     this.khaySquare.setSize(80, 80).setDepth(20);
     this.makeDraggable(this.khaySquare, 'square-tray');
@@ -111,7 +232,7 @@ export class MealShapesScene extends Phaser.Scene {
     // Thớt hình chữ nhật - Wrong Target
     this.thotRect = this.add.container(150, height / 2 + 190);
     const thotBg = this.add.rectangle(0, 0, 90, 50, 0x8a8a8a).setStrokeStyle(4, 0x5e5e5e);
-    const thotLabel = this.add.text(0, 0, 'Thớt', { fontSize: '14px', color: '#ffffff' }).setOrigin(0.5);
+    const thotLabel = this.add.text(0, 0, 'Thớt', { fontFamily: 'iruKaEdu', fontSize: '14px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.thotRect.add([thotBg, thotLabel]);
     this.thotRect.setSize(90, 50).setDepth(20);
     this.makeDraggable(this.thotRect, 'rect-tray');
@@ -140,13 +261,13 @@ export class MealShapesScene extends Phaser.Scene {
         this.input.setDraggable(container, false);
         container.x = tableX - 50;
         container.y = tableY - 10;
-        
+
         // Visual indicators of success
         this.showSuccessFx(container);
 
         // Subtitles & Voice
         gameBus.emit('learning-word', { vietnamese: 'Hình Tròn (Circle)', english: 'Circle', kind: 'success' });
-        
+
         this.time.delayedCall(2000, () => {
           this.startPhase2();
         });
@@ -189,7 +310,7 @@ export class MealShapesScene extends Phaser.Scene {
     // Place a small square tray on the table as well so we can sort both
     this.khaySquare = this.add.container(this.table.x + 90, this.table.y - 10);
     const trayBg = this.add.rectangle(0, 0, 95, 95, 0xa0785a).setStrokeStyle(4, 0x7c593f);
-    const trayLabel = this.add.text(0, 0, 'Khay Vuông', { fontSize: '13px', color: '#ffffff' }).setOrigin(0.5);
+    const trayLabel = this.add.text(0, 0, 'Khay Vuông', { fontFamily: 'iruKaEdu', fontSize: '13px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
     this.khaySquare.add([trayBg, trayLabel]).setDepth(11).setAlpha(0);
 
     this.tweens.add({
@@ -204,10 +325,10 @@ export class MealShapesScene extends Phaser.Scene {
     const dishColors = [0xff6b6b, 0x51cf66, 0xfcc419, 0x339af0];
     const dishLabels = ['Giò (Tròn)', 'Bánh chưng (Vuông)', 'Trứng (Tròn)', 'Đậu (Vuông)'];
 
-    gameBus.emit('action-context', { 
-      label: 'CHIA ĐỒ ĂN', 
-      enabled: false, 
-      hint: 'Xếp đĩa Tròn vào Mâm Tròn, đĩa Vuông vào Khay Vuông' 
+    gameBus.emit('action-context', {
+      label: 'CHIA ĐỒ ĂN',
+      enabled: false,
+      hint: 'Xếp đĩa Tròn vào Mâm Tròn, đĩa Vuông vào Khay Vuông'
     });
 
     dishTypes.forEach((shape, index) => {
@@ -215,7 +336,7 @@ export class MealShapesScene extends Phaser.Scene {
       const y = height / 2 - 20 + (index * 80);
 
       const dish = this.add.container(x, y);
-      
+
       let bg;
       if (shape === 'circle') {
         bg = this.add.circle(0, 0, 30, dishColors[index]).setStrokeStyle(3, 0xffffff);
@@ -223,9 +344,9 @@ export class MealShapesScene extends Phaser.Scene {
         bg = this.add.rectangle(0, 0, 56, 56, dishColors[index]).setStrokeStyle(3, 0xffffff);
       }
 
-      const txt = this.add.text(0, 0, dishLabels[index], { fontSize: '10px', color: '#000000', fontStyle: 'bold' }).setOrigin(0.5);
+      const txt = this.add.text(0, 0, dishLabels[index], { fontFamily: 'iruKaEdu', fontSize: '10px', color: '#000000', fontStyle: 'bold' }).setOrigin(0.5);
       dish.add([bg, txt]).setSize(60, 60).setDepth(20);
-      
+
       this.dishes.push(dish);
       this.makeDishDraggable(dish, shape, x, y);
     });
@@ -248,7 +369,7 @@ export class MealShapesScene extends Phaser.Scene {
       if (distance < 100) {
         // Correct drop!
         this.input.setDraggable(dish, false);
-        
+
         // Animate snapping inside the target container
         const targetX = targetTray.x + (shape === 'circle' ? (this.collectedCount === 0 ? -18 : 18) : (this.pairsCount === 0 ? -16 : 16));
         const targetY = targetTray.y + (shape === 'circle' ? 5 : 5);
@@ -310,38 +431,38 @@ export class MealShapesScene extends Phaser.Scene {
 
     // Show silhouettes on table where bowls should go
     const { height } = this.cameras.main;
-    
+
     // Spot for Father (Big Bowl)
     this.fatherSpot = this.add.ellipse(this.table.x, this.table.y - 45, 65, 30, 0x339af0, 0.3)
       .setStrokeStyle(2, 0x339af0)
       .setDepth(11);
-    this.add.text(this.table.x, this.table.y - 45, 'Bố', { fontSize: '12px', color: '#000000' }).setOrigin(0.5).setDepth(12);
+    this.add.text(this.table.x, this.table.y - 45, 'Bố', { fontFamily: 'iruKaEdu', fontSize: '14px', color: '#000000', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
 
     // Spot for Me/Boy (Small Bowl)
     this.boySpot = this.add.ellipse(this.table.x - 70, this.table.y + 20, 45, 20, 0xfcc419, 0.3)
       .setStrokeStyle(2, 0xfcc419)
       .setDepth(11);
-    this.add.text(this.table.x - 70, this.table.y + 20, 'Bé', { fontSize: '12px', color: '#000000' }).setOrigin(0.5).setDepth(12);
+    this.add.text(this.table.x - 70, this.table.y + 20, 'Bé', { fontFamily: 'iruKaEdu', fontSize: '14px', color: '#000000', fontStyle: 'bold' }).setOrigin(0.5).setDepth(12);
 
     // Render Big Bowl and Small Bowl on chạn bát
     // Big Bowl
     this.bigBowl = this.add.container(150, height / 2 + 10);
     const bigBg = this.add.ellipse(0, 0, 70, 40, 0xffffff).setStrokeStyle(3, 0x339af0);
-    const bigTxt = this.add.text(0, -2, 'Bát To', { fontSize: '15px', color: '#339af0', fontStyle: 'bold' }).setOrigin(0.5);
+    const bigTxt = this.add.text(0, -2, 'Bát To', { fontFamily: 'iruKaEdu', fontSize: '15px', color: '#339af0', fontStyle: 'bold' }).setOrigin(0.5);
     this.bigBowl.add([bigBg, bigTxt]).setSize(70, 40).setDepth(20);
     this.makeBowlDraggable(this.bigBowl, 'big', this.fatherSpot);
 
     // Small Bowl
     this.smallBowl = this.add.container(150, height / 2 + 90);
     const smallBg = this.add.ellipse(0, 0, 46, 26, 0xffffff).setStrokeStyle(3, 0xfcc419);
-    const smallTxt = this.add.text(0, -1, 'Bát Nhỏ', { fontSize: '10px', color: '#fcc419', fontStyle: 'bold' }).setOrigin(0.5);
+    const smallTxt = this.add.text(0, -1, 'Bát Nhỏ', { fontFamily: 'iruKaEdu', fontSize: '10px', color: '#fcc419', fontStyle: 'bold' }).setOrigin(0.5);
     this.smallBowl.add([smallBg, smallTxt]).setSize(46, 26).setDepth(20);
     this.makeBowlDraggable(this.smallBowl, 'small', this.boySpot);
 
-    gameBus.emit('action-context', { 
-      label: 'SO SÁNH BÁT', 
-      enabled: false, 
-      hint: 'Kéo Bát To đặt cho Bố, Bát Nhỏ đặt cho Bé' 
+    gameBus.emit('action-context', {
+      label: 'SO SÁNH BÁT',
+      enabled: false,
+      hint: 'Kéo Bát To đặt cho Bố, Bát Nhỏ đặt cho Bé'
     });
   }
 
@@ -418,23 +539,23 @@ export class MealShapesScene extends Phaser.Scene {
     const { height } = this.cameras.main;
     this.chopsticksHolder = this.add.container(150, height / 2 + 50);
     const holderBg = this.add.rectangle(0, 0, 60, 90, 0xe15e3b).setStrokeStyle(4, 0xffe3a6);
-    const holderLabel = this.add.text(0, 0, 'ỐNG ĐŨA', { fontSize: '11px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
-    
+    const holderLabel = this.add.text(0, 0, 'ỐNG ĐŨA', { fontFamily: 'iruKaEdu', fontSize: '12px', color: '#ffffff', fontStyle: 'bold' }).setOrigin(0.5);
+
     // Draw some stick tops poking out
     for (let i = 0; i < 5; i++) {
       const stick = this.add.rectangle(-20 + (i * 10), -50, 4, 30, 0xa75d2e);
       this.chopsticksHolder.add(stick);
     }
-    
+
     this.chopsticksHolder.add([holderBg, holderLabel]).setSize(60, 90).setDepth(20);
 
     // Make it clickable (Tap to draw)
     this.chopsticksHolder.setInteractive({ useHandCursor: true });
-    
-    gameBus.emit('action-context', { 
-      label: 'LẤY ĐŨA', 
-      enabled: true, 
-      hint: 'Chạm (Tap) vào Ống đũa trên tủ để lấy đũa đưa cho ông bà' 
+
+    gameBus.emit('action-context', {
+      label: 'LẤY ĐŨA',
+      enabled: true,
+      hint: 'Chạm (Tap) vào Ống đũa trên tủ để lấy đũa đưa cho ông bà'
     });
 
     // Listen to click or Action Button
@@ -470,7 +591,7 @@ export class MealShapesScene extends Phaser.Scene {
       } else if (this.collectedCount === 2) {
         this.chopsticksHolder.disableInteractive();
         gameBus.emit('learning-word', { vietnamese: 'Hai (Two)', english: 'Two', kind: 'complete' });
-        
+
         this.time.delayedCall(2200, () => {
           this.triggerWin();
         });
@@ -478,7 +599,7 @@ export class MealShapesScene extends Phaser.Scene {
     };
 
     this.chopsticksHolder.on('pointerdown', drawChopstick);
-    
+
     const onAction = gameBus.on('action', drawChopstick);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, onAction);
   }
@@ -488,7 +609,7 @@ export class MealShapesScene extends Phaser.Scene {
   // ==========================================
   private showSuccessFx(obj: Phaser.GameObjects.GameObject): void {
     const { x, y } = obj as any;
-    
+
     // Simple burst effect
     const particles = this.add.graphics({ x: x, y: y }).setDepth(30);
     particles.fillStyle(0xfff3a6, 0.8);

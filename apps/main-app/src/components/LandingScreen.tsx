@@ -45,7 +45,7 @@ export function LandingScreen({ onStart, onJourney }: Props) {
         transition={{ type: "spring", bounce: 0.5, duration: 0.8 }}
         className="relative z-10 bg-white/70 backdrop-blur-md border-4 border-white shadow-xl rounded-[3rem] p-10 max-w-3xl text-center flex flex-col items-center gap-6"
       >
-        <div className="bg-primary text-white font-bold py-2 px-4 rounded-full text-sm uppercase tracking-widest shadow-md">
+        <div className="bg-primary text-white font-bold py-2 px-4 rounded-full text-sm tracking-widest shadow-md">
           Toán & AI Mầm Non · 3–6 Tuổi
         </div>
 

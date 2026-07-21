@@ -29,7 +29,7 @@ export function BouncyButton({ color = "primary", size = "md", className, childr
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       className={cn(
-        "font-bold uppercase tracking-wider transition-colors",
+        "font-bold tracking-wider transition-colors",
         "shadow-bouncy active:shadow-bouncy-pressed",
         colorClasses[color],
         sizeClasses[size],

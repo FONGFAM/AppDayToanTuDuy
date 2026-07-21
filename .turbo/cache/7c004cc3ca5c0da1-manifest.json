@@ -18,7 +18,7 @@
             "mode": 420,
             "is_dir": false
         },
-        "apps/main-app/dist/assets/phongbep.png": {
+        "apps/main-app/dist/assets/phongan.png": {
             "size": 7408861,
             "mtime_nanos": 1784516159052263211,
             "mode": 420,
@@ -156,7 +156,7 @@
             "mode": 420,
             "is_dir": false
         },
-        "apps/main-app/dist/assets/phongbep.webp": {
+        "apps/main-app/dist/assets/phongan.png": {
             "size": 1558086,
             "mtime_nanos": 1784516159056522312,
             "mode": 420,
@@ -251,8 +251,8 @@
         "apps/main-app/dist/assets/index-CSPUluJQ.js",
         "apps/main-app/dist/assets/kitchen.jpg",
         "apps/main-app/dist/assets/ongba1.jpg",
-        "apps/main-app/dist/assets/phongbep.png",
-        "apps/main-app/dist/assets/phongbep.webp",
+        "apps/main-app/dist/assets/phongan.png",
+        "apps/main-app/dist/assets/phongan.png",
         "apps/main-app/dist/assets/ui",
         "apps/main-app/dist/assets/ui/icon-192.png",
         "apps/main-app/dist/assets/ui/icon-512.png",
